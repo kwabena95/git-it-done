@@ -1,5 +1,6 @@
 // UI elements
 const issueContainerEl = document.querySelector('#issues-container');
+const limitWarningEl = document.querySelector('#limit-warning');
 
 
 // request repo issues
@@ -10,6 +11,11 @@ const getRepoIssues = (repo) => {
         if (res.ok) {
             res.json().then(data => {
                 displayIssues(data);
+
+                // check if api had paginated issues
+                if (displayWarning(repo)) {
+                    console.log("There's more than 30 issues");
+                }
             });
         } else {
             alert('There was a problem with your request!');
@@ -52,8 +58,21 @@ const displayIssues = (issues) => {
         // append the link to container
         issueContainerEl.appendChild(issueEl);
     }
+}
 
+// display warning
+const displayWarning = (repo) => {
+    // add text to warning container
+    limitWarningEl.textContent = 'To see more than 30 issues, visit ';
 
+    // create a link element
+    const linkEl = document.createElement('a');
+    linkEl.textContent = 'See More Issues on GitHub.com';
+    linkEl.setAttribute('href', `https://github.com/${repo}/issues`);
+    linkEl.setAttribute('target', '_blank');
+
+    // append to warning container
+    limitWarningEl.appendChild(linkEl);
 }
 
 getRepoIssues('facebook/react');
